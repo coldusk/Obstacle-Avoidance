@@ -43,7 +43,7 @@ def a_star_search(start, goal, obstacles):
     return []
 
 
-# 人工势场法实现1
+#人工势场法实现1
 def potential_field_planning(current, goal, obstacles, uavs, uav_index, use_potential_field=False, path=None,
                              path_index=0):
     if use_potential_field:
@@ -80,28 +80,25 @@ def potential_field_planning(current, goal, obstacles, uavs, uav_index, use_pote
                     fx += repulsion * dx / dist
                     fy += repulsion * dy / dist
 
-    # 检测合力大小
+    #检测合力大小
     force_magnitude = math.sqrt(fx ** 2 + fy ** 2)
 
-    # 平衡检测模块
+    #平衡检测模块
     if use_potential_field and force_magnitude < MIN_FORCE_THRESHOLD:
         print(f"UAV {uav_index} detected force balance at ({current[0]:.2f}, {current[1]:.2f}), escaping...")
-        # 随机选择左或右
         direction = random.choice([-1, 1])  # -1: 左, 1: 右
-        # 计算当前航向（目标方向）
+        #计算当前航向（目标方向）
         heading_x, heading_y = target[0] - current[0], target[1] - current[1]
         heading_norm = math.sqrt(heading_x ** 2 + heading_y ** 2)
         if heading_norm > 0:
             heading_x, heading_y = heading_x / heading_norm, heading_y / heading_norm
-            # 计算垂直于航向的向量
             perpendicular_x, perpendicular_y = -heading_y * direction, heading_x * direction
-            # 移动一段距离以摆脱平衡
+            #脱离平衡
             next_x = current[0] + perpendicular_x * ESCAPE_DISTANCE
             next_y = current[1] + perpendicular_y * ESCAPE_DISTANCE
         else:
             next_x, next_y = current[0], current[1]  # 如果无航向，默认不动
     else:
-        # 正常移动
         next_x = current[0] + fx
         next_y = current[1] + fy
         step_size = math.sqrt((next_x - current[0]) ** 2 + (next_y - current[1]) ** 2)
@@ -119,7 +116,7 @@ def potential_field_planning(current, goal, obstacles, uavs, uav_index, use_pote
     return (next_x, next_y)
 
 
-# 人工势场法实现2
+#人工势场法实现2
 def potential_field_planning_formation(current, goal, obstacles, uavs, uav_index):
     if distance(current, goal) <= FORMATION_THRESHOLD:
         return current
@@ -167,7 +164,7 @@ def potential_field_planning_formation(current, goal, obstacles, uavs, uav_index
     return (next_x, next_y)
 
 
-# 动态障碍物更新
+#动态障碍物更新
 def update_obstacles(obstacles):
     updated_obstacles = []
     for ox, oy, radius, vx, vy in obstacles:
@@ -179,7 +176,7 @@ def update_obstacles(obstacles):
     return updated_obstacles
 
 
-# 检查障碍物是否在后方
+#检查障碍物是否在后方
 def all_obstacles_behind(uavs, goals, obstacles):
     for i, uav in enumerate(uavs):
         dir_x, dir_y = goals[i][0] - uav[0], goals[i][1] - uav[1]
