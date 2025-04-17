@@ -29,7 +29,6 @@ def main():
 
     uav_points = [plt.plot(uav[0], uav[1], 'go', label=f'UAV {i}' if i == 0 else "")[0] for i, uav in enumerate(uavs)]
 
-    # 阶段2：垂直脱离
     heading_normalized = (heading[0] / math.sqrt(2), heading[1] / math.sqrt(2))
     left_turn = (-heading_normalized[1], heading_normalized[0])
     right_turn = (heading_normalized[1], -heading_normalized[0])
@@ -50,7 +49,7 @@ def main():
             plt.gca().add_patch(circle)
         plt.pause(0.2)
 
-    # 阶段3：避障（A* 路径规划 + 人工势场法）
+    # 避障（A* 路径规划 + 人工势场法）
     paths = [a_star_search(uavs[i], goals[i], static_obstacles) for i in range(NUM_UAVS)]
     path_lines = [None] * NUM_UAVS
     path_indices = [0] * NUM_UAVS
